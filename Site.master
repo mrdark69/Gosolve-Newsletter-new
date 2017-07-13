@@ -1,0 +1,241 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="Site.master.cs" Inherits="SiteMaster" %>
+
+<!DOCTYPE html>
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %> - My ASP.NET Application</title>
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+
+   
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+       
+         <%: Scripts.Render("~/bundles/MainScript") %>
+    </asp:PlaceHolder>
+    
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+     <style>
+        .sitemap a{
+            color:#676a6c !important;
+        }
+    </style>
+
+    <asp:ContentPlaceHolder ID="HeaderScript" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body <%=StyleCore.bodyClass() %> >
+
+     
+
+    <form runat="server">
+       
+
+        <div id="wrapper">
+        <%--nav side bar--%>
+         <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="sidebar-collapse">
+            <ul class="nav metismenu" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element">
+                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">Welcome  </strong>
+                             </span> <span class="text-muted text-xs block"><%: Context.User.Identity.GetUserName()  %> <b class="caret"></b></span> </span> </a>
+                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
+                                <li><asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="<i class='fa fa-sign-out'></i> Log out" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" /></li>
+                            </ul>
+                    </div>
+                    <div class="logo-element">
+                        IN+
+                    </div>
+                </li>
+                <li <%=MenuActive("Default")%> >
+                    <a href="<%= Page.ResolveClientUrl("~/Default") %>"><i class="fa fa-th-large"></i> <span class="nav-label">Dashboards</span></a>
+                </li>
+                <li <%=MenuActive("SubScriber","SubScriber,SubscriberGroup")%>>
+                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Subscriber Manage</span><span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level">
+                           <li <%=MenuActive("SubScriber")%>><a href="<%= Page.ResolveClientUrl("~/Application/SubScriber") %>">Subscriber List</a></li>
+                        <li <%=MenuActive("SubscriberGroup")%>><a href="<%= Page.ResolveClientUrl("~/Application/SubscriberGroup") %>">Subscriber Groups</a></li>
+                         <li <%=MenuActive("SubScriberVerify")%>><a href="<%= Page.ResolveClientUrl("~/Application/SubScriberVerify") %>">Verify Email</a></li>
+                     
+                    </ul>
+                </li>
+                <li <%=MenuActive("Template","Template,Media")%>>
+                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Email Templates</span><span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level">
+                        <li <%=MenuActive("Template")%>><a href="<%= Page.ResolveClientUrl("~/Application/Template") %>">Templates List</a></li>
+                        <li <%=MenuActive("Media")%>><a href="<%= Page.ResolveClientUrl("~/Application/Media") %>">Media</a></li>
+                        
+                    </ul>
+                </li>
+                
+                <li <%=MenuActive("Campaign")%>>
+                    <a href="#"><i class="fa fa-th-large"></i> <span class="nav-label">Campaign</span><span class="fa arrow"></span> </a>
+                    <ul class="nav nav-second-level">
+                        <li <%=MenuActive("Campaign")%> ><a href="<%= Page.ResolveClientUrl("~/Application/Campaign") %>">Campaign Manage</a></li>
+                        <%--<li><a href="<%= Page.ResolveClientUrl("~/Application/R_CGroup") %>">Campaign Group</a></li>--%>
+                    </ul>
+                </li>
+                <li <%=MenuActive("MailBox")%>>
+                    <a href="<%= Page.ResolveClientUrl("~/Application/MailBox") %>"><i class="fa fa-th-large"></i> <span class="nav-label">MailBox</span></a>
+                </li>
+                <li <%=MenuActive("Setting")%>>
+                    <a href="<%= Page.ResolveClientUrl("~/Application/Setting") %>"><i class="fa fa-th-large"></i> <span class="nav-label">MailServer Setting</span></a>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>
+        <%--nav side bar--%>
+    <div id="page-wrapper" class="gray-bg">
+
+        <%--top menu User right--%>
+        <div class="row border-bottom"><%--white-bg--%>
+            <nav class="navbar navbar-static-top " role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                    <%--<form role="search" class="navbar-form-custom" method="post" action="#">
+                        <div class="form-group">
+                            <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
+                        </div>
+                    </form>--%>
+                </div>
+                <ul class="nav navbar-top-links navbar-right">
+                    <li>
+                          <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="<i class='fa fa-sign-out'></i> Log out" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                    
+                    </li>
+                </ul>
+
+            </nav>
+        </div>
+        <%--top menu User right--%>
+
+        <%--sitemap Bar--%>
+        
+
+         <%-- <asp:Label ID="lblHeadPageTitle" runat="server"><%= SiteMap.CurrentNode.Title%></asp:Label><br />
+           <asp:Label ID="lblHeadPageDes" runat="server"><%= SiteMap.CurrentNode.Description%></asp:Label>--%>
+         <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2><%=  (SiteMap.CurrentNode == null? "DashBoard":SiteMap.CurrentNode.Title)  %></h2>
+                    <asp:SiteMapPath ID="SiteMapPath1" runat="server"  CssClass="sitemap" CurrentNodeStyle-CssClass="sitemapcurrent" CurrentNodeStyle-Font-Bold="true" PathSeparator=" &nbsp; / &nbsp;  "
+                        PathSeparatorStyle-CssClass="separator">
+                    </asp:SiteMapPath>
+                    <%--<ol class="breadcrumb">
+                        <li>
+                            <a href="index.html">Home</a>
+                        </li>
+                        <li>
+                            <a>Mailbox</a>
+                        </li>
+                        <li class="active">
+                            <strong>Email Template</strong>
+                        </li>
+                    </ol>--%>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
+
+        <%--sitemap Bar--%>
+
+
+        <%--content--%>
+        <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+          <%--content--%>
+
+
+        <div class="footer">
+            <div class="pull-right">
+                10GB of <strong>250GB</strong> Free.
+            </div>
+            <div>
+                <strong>&copy;</strong> <%: DateTime.Now.Year %> - Gosolve Application
+            </div>
+        </div>
+
+    </div>
+</div>
+
+        
+       
+    
+
+
+
+    </form>
+    
+ 
+      
+
+     <div class="modal inmodal fade" id="modal_html_builder"  role="dialog"  aria-hidden="true">
+                                         
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                            <h4 class="modal-title" id="modal_builder_1">Template Builder</h4>
+                                            <%--<small class="font-bold">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</small>--%>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="ibox-content" id="model_html_builder_content">
+                                                 <div class="sk-spinner sk-spinner-wave">
+                                      
+                                                    <div class="sk-rect1"></div>
+                                                    <div class="sk-rect2"></div>
+                                                    <div class="sk-rect3"></div>
+                                                    <div class="sk-rect4"></div>
+                                                    <div class="sk-rect5"></div>
+                                                </div>
+                                                  <!--[if lt IE 7]>
+                                            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
+                                                your browser</a> to improve your experience.</p>
+                                            <![endif]-->
+                                            <div id="app"><loading v-if="loading">Loading ...</loading><email-builder-component></email-builder-component></div>
+
+                                            </div>
+                                          
+                                         
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" id="modal_builder_2" class="btn btn-white" data-dismiss="modal">Close Template Builder</button>
+                                            <%--<button type="button" class="btn btn-primary">Save changes</button>--%>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+    <div class="modal inmodal fade" id="my_confirm" tabindex="-1" role="dialog"  aria-hidden="true">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <a href="#" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></a>
+                                            <h4 class="modal-title">Notification</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p><strong>Are you sure?</strong> </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a href="#" class="btn btn-white" data-dismiss="modal">Close</a>
+                                            <a  href="#" class="btn btn-primary" id="my_modal_action">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+    <asp:ContentPlaceHolder ID="ContentFooter" runat="server">
+       </asp:ContentPlaceHolder>
+</body>
+</html>

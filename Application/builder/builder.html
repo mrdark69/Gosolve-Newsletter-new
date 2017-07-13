@@ -1,0 +1,366 @@
+<transition name="fade">
+<div id="email-builder" v-if="!loading">
+    
+    <div class="email-builder-preview-actions" :class="{preview: preview}">
+        <div class="btn-group">
+            <button class="btn btn-danger" @click="preview = false">Close preview</button>
+            <button class="btn btn-success" v-if="hasChanges()" @click="saveEmailTemplate()">Save email</button>
+        </div>
+    </div>
+    <div class="email-builder-header" :class="{preview: preview}">
+        <div class="email-builder-header-actions">
+            <!--<h2>Logo</h2>-->
+            <div class="md-btn-group">
+
+                <input type="text" class="form-control col-md-6" id="t-title" placeholder="Template Title"  style="width:600px" />
+                <!--<button class="md-btn md-btn-flat md-btn-flat-danger md-btn-small" :class="{disabled: currentLanguage == 'en'}" @click="changeLanguage('en')">En</button>-->
+                <!--<button class="md-btn md-btn-flat md-btn-flat-danger md-btn-small" :class="{disabled: currentLanguage == 'ru'}" @click="changeLanguage('ru')">Ru</button>-->
+            </div>
+        </div>
+
+        <div class="email-builder-header-actions">
+            <div class="md-btn-group">
+                <i class="actions md-icon material-icons close-icon md-color-red-600" :class="{disabled: !currentElement.type}" title="Close email settings" @click="editElement()">close</i>
+                <i class="actions md-icon material-icons save-icon md-color-green-600" title="Save email" :class="{disabled: !hasChanges()}" @click="hasChanges() && saveEmailTemplate()">save</i>
+                <i class="actions md-icon material-icons" s title="Email settings" @click="editElement('emailSettings')">settings</i>
+            </div>
+
+            <div  > <!--md-btn md-btn-success-->  <!--v-if="hasChanges()"-->
+                <button class="btn btn-success" id="btn-b-update-template" @click="UpdateTemplate()"><i class="fa fa-save"></i> UPdate Template Now</button>
+                <button class="btn btn-success" id="btn-b-add-template"  @click="saveNewEmailTemplate()"><i class="fa fa-save"></i> Make to New Template</button>
+                <button class="btn btn-primary" @click="previewEmail()">
+                    <i class="material-icons" style="color:#fff">remove_red_eye</i>
+                    Preview
+                </button>
+                <!--md-btn md-btn-primary--> 
+                <!--<button class="btn btn-success" @click="getDataReal()">
+                    <i class="material-icons">undo</i>
+                    Get DAta
+                </button>-->
+                
+                <!--<button class="btn btn-success" @click="importJson()">
+                    <i class="material-icons">undo</i>
+                    Import JSON
+                </button>-->
+                <!--<button class="btn btn-success" @click="exportJson()">
+                    <i class="material-icons">redo</i>
+                    Export JSON
+                </button>-->
+                <!--<button class="btn btn-success" @click="exportEmail()">
+                    <i class="material-icons" style="color:#fff">redo</i>
+                    Export HTML
+                </button>-->
+            </div>
+        </div>
+
+        <div class="email-builder-header-actions_custom" id="email-builder-header-actions_custom" style="display:none;">
+          
+            <div id="btn-custom-add-media">
+                <!--md-btn md-btn-success-->  <!--v-if="hasChanges()"-->  <!--@click="AddImagefrompanel()"-->
+                
+                <button style="display:none" id="btn-custom-add-medias-m" class="btn-custom-add-medias btn btn-success"><i class="fa fa-plus"></i> Add Image</button>
+                <button class="btn btn-primary" @click="CloseImageAddPanel()">
+                    <i class="fa fa-window-close" aria-hidden="true" style="color:#fff"></i> Close
+                </button>
+               
+            </div>
+        </div>
+    </div>
+    <div class="email-builder-content">
+        <div class="md-card" :class="{preview: preview}">
+            <div class="md-card-content elements-list">
+                <draggable :list="elements" :options="{group: { name: 'people', pull: 'clone', put: false }, sort: false, dragClass: 'drag-element'}" :clone="clone" element="ul" class="md-list md-list-addon" ref="elements">
+                    <li v-for="element in elements" :data-type="element.type">
+                        <div class="md-list-addon-element">
+                            <i class="material-icons" v-html="element.icon" :title="element.primary_head + '<br>' + element.second_head"></i>
+                        </div>
+                    </li>
+                </draggable>
+            </div>
+        </div>
+        <div position-relative :class="{configured: !!currentElement.type, preview: preview}">
+            <div class="builder" :style="Email.emailSettings.options">
+                <draggable class="email-container" :class="{empty: !Email.elements.length}" data-empty-template="Drag and drop elements here" :list="Email.elements" :options="{group: {name: 'people', put: true}, sort: true, handle: 'i.actions.move'}" ref="emailElements">
+                    <div class="builder-element" :class="{selected: currentElement.id == element.id}" v-for="element in Email.elements" :id="element.id">
+                        <component :element="element" :is="element.component" @click.native="editElement(element.id)"></component>
+                        <i v-if="currentElement != element && element.type == 'video'" class="actions edit md-icon material-icons" @click="editElement(element.id)" title="Edit element">edit</i>
+                        <i class="actions delete md-icon material-icons" title="Delete element" @click="removeElement(element)">delete</i>
+                        <i class="actions clone md-icon material-icons" title="Clone element" @click="cloneElement(element)">content_copy</i>
+                        <i v-if="Email.elements.length > 1" title="Move element" class="actions move md-icon material-icons">drag_handle</i>
+                    </div>
+                </draggable>
+            </div>
+        </div>
+        <div class="md-card" :class="{empty: !currentElement.type || preview}">
+            <div class="md-card-content">
+                <form action="#" onsubmit="return false">
+                    <div v-for="(option, key, index) in currentElement.options" v-if="currentElement.type && currentElement.type != 'emailSettings'" class="email-builder-element-edit-field">
+
+                        <!--<div v-if="key.search('Hide') > -1" class="form-row color-inputs">-->
+                            <!--<label for="builder_el_o_image_hide" class="md-label">{{key | makeTitle}}</label>-->
+                            <!--<input id="builder_el_o_image_hide" type="checkbox" v-model="currentElement.options[key]" />-->
+                            <!--<br>-->
+                        <!--</div>-->
+
+                        <!--@click="AddmediaCustom(this,key,location.origin)"--> 
+
+                        <div v-if="key.indexOf('image') > -1 && key.search('Hide') == -1 && !currentElement.options[key + 'Hide']" class="form-row">
+                            <label for="builder_el_o_image_url" class="md-label">Image URL</label> <!--v-input-file-upload--> <!--v-custom-sel-media-->
+                            <input id="builder_el_o_image_url" type="text" class="md-input" v-bind:index="index"  v-md-input v-custom-sel-media v-model="currentElement.options[key]" />
+                            <button type="button" style="padding: 3px;height: 20px;font-size: 10px;" v-on:click="AddmediaCustom($event,location.origin,option,key,index)" class="btn btn-primary btn-sm">Add Media </button>
+                        </div>
+
+                        <div v-if="key == 'html'" class="form-row textarea">
+                            <label for="builder_el_html" class="md-label">HTML Code here</label>
+                            <textarea id="builder_el_html" style="height: 300px; resize: vertical" v-model="currentElement.options[key]" title="HTML Code"></textarea>
+                        </div>
+
+                        <div v-if="key == 'iframeVideo'" class="form-row textarea">
+                            <label for="builder_el_video" class="md-label">Iframe video code</label>
+                            <input id="builder_el_video" type="text" class="md-input" placeholder="'<iframe ...></iframe>'" v-md-input v-model="currentElement.options[key]" />
+                        </div>
+
+                        <div v-if="key == 'fullWidth'" class="form-row color-inputs">           
+                            <label for="full_video_width" class="md-label">Full Width?</label>
+                            <input type="checkbox" id="full_video_width" v-model="currentElement.options[key]">
+                        </div>
+
+                        <div v-if="key.substring(0, 5) == 'width'" class="form-row">
+                            <label for="builder_el_o_width" class="md-label">Image Width</label>
+                            <input id="builder_el_o_width" type="text" class="md-input" v-md-input v-model="currentElement.options[key]" />
+                        </div>
+
+                        <div v-if="key == 'buttonText'" class="form-row">
+                            <label for="builder_el_o_btn_text" class="md-label">Button text</label>
+                            <input id="builder_el_o_btn_text" type="text" class="md-input" v-md-input v-model="currentElement.options[key]" />
+                        </div>
+
+                        <div v-if="key == 'url'" class="form-row">
+                            <label for="builder_el_o_url" class="md-label">URL</label>
+                            <input id="builder_el_o_url" type="url" class="md-input" v-md-input v-model="currentElement.options[key]" />
+                        </div>
+
+                        <div v-if="key == 'align'" class="form-row">
+                            <div class="md-btn-group">
+                                <button type="button" class="md-btn md-btn-flat" :class="{'md-btn-primary': option == 'left', 'md-btn-flat-primary': option != 'left'}" @click="currentElement.options[key] = 'left'">Left</button>
+                                <button type="button" class="md-btn md-btn-flat" :class="{'md-btn-primary': option == 'center', 'md-btn-flat-primary': option != 'center'}" @click="currentElement.options[key] = 'center'">Center</button>
+                                <button type="button" class="md-btn md-btn-flat" :class="{'md-btn-primary': option == 'right', 'md-btn-flat-primary': option != 'right'}" @click="currentElement.options[key] = 'right'">Right</button>
+                            </div>
+                        </div>
+
+                        <div v-if="['title', 'subTitle'].indexOf(key) > -1 || key.search('Link') > -1" class="form-row">
+                            <label :for="key" class="md-label">{{ key | makeTitle }}</label>
+                            <input :id="key" type="text" class="md-input" v-md-input v-model="currentElement.options[key]" />
+                        </div>
+
+                        <div v-if="key == 'padding'" class="form-row padding-inputs">
+                            <label for="builder_el_o_top" class="md-label">Top</label>
+                            <input id="builder_el_o_top" type="text" class="md-input" v-md-input v-model="currentElement.options[key][0]">
+
+                            <label for="builder_el_o_right" class="md-label">Right</label>
+                            <input id="builder_el_o_right" type="text" class="md-input" v-md-input v-model="currentElement.options[key][1]">
+
+                            <label for="builder_el_o_bottom" class="md-label">Bottom</label>
+                            <input id="builder_el_o_bottom" type="text" class="md-input" v-md-input v-model="currentElement.options[key][2]">
+
+                            <label for="builder_el_o_left" class="md-label">Left</label>
+                            <input id="builder_el_o_left" type="text" class="md-input" v-md-input v-model="currentElement.options[key][3]">
+                        </div>
+
+                        <div v-if="key == 'backgroundColor' || key == 'color' || key == 'buttonBackgroundColor'" class="form-row color-inputs">
+                            <label class="md-label" for="elementBackgroundColor" v-if="key == 'backgroundColor'">Background color</label>
+                            <label class="md-label" for="elementBackgroundColor" v-if="key == 'color'">Text color</label>
+                            <label class="md-label" for="elementBackgroundColor" v-if="key == 'buttonBackgroundColor'">Button background color</label>
+                            <input id="elementBackgroundColor" type="color" v-model="currentElement.options[key]" />
+                        </div>
+                    </div>
+                    <div v-if="currentElement.type && currentElement.type == 'emailSettings'">
+
+                        <div class="email-builder-element-edit-field">
+                            <div class="form-row padding-inputs">
+                                <label class="md-label" for="emailSettingsPaddingTop">Top</label>
+                                <input id="emailSettingsPaddingTop" class="md-input" type="text" v-md-input v-model="currentElement.options.paddingTop">
+                                <label class="md-label" for="emailSettingsPaddingLeft">Left</label>
+                                <input id="emailSettingsPaddingLeft" class="md-input" type="text" v-md-input v-model="currentElement.options.paddingLeft">
+                                <label class="md-label" for="emailSettingsPaddingBottom">Bottom</label>
+                                <input id="emailSettingsPaddingBottom" type="text" class="md-input" v-md-input v-model="currentElement.options.paddingBottom">
+                                <label class="md-label" for="emailSettingsPaddingRight">Right</label>
+                                <input id="emailSettingsPaddingRight" type="text" class="md-input" v-md-input v-model="currentElement.options.paddingRight">
+                            </div>
+                        </div>
+
+                        <div class="email-builder-element-edit-field">
+                            <div class="form-row color-inputs">
+                                <label class="md-label" for="emailSettingsBackground">Background color</label>
+                                <input id="emailSettingsBackground" type="color" v-model="currentElement.options.backgroundColor" />
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            
+        </div>
+    </div>
+
+    <div class="modal_media" id="modal_media" style="display:none;">
+        <div class="row">
+            <div class="col-md-8 col-lg-8">
+                <div class="ibox float-e-margins">
+
+                    <div class="ibox-content" id="media-list">
+                        <div class="sk-spinner sk-spinner-wave">
+
+                            <div class="sk-rect1"></div>
+                            <div class="sk-rect2"></div>
+                            <div class="sk-rect3"></div>
+                            <div class="sk-rect4"></div>
+                            <div class="sk-rect5"></div>
+                        </div>
+                        <h2>Media gallery</h2>
+
+                        <div role="form" class="form-inline">
+                            <div class="col-md-8">
+
+                                <div class="form-group">
+                                    <select id="sel_type" class="form-control">
+                                        <option value="">All Media Item</option>
+                                        <option value="image">Image</option>
+                                        <option value="other">Other</option>
+                                    </select>
+
+
+                                    <select id="sel_cat" class="form-control">
+                                        <option value="0">All Media Category</option>
+
+                                    </select>
+                                </div>
+
+
+                            </div>
+                           
+
+
+
+
+
+                            <div style="clear:both"></div>
+                        </div>
+
+                        <div class="hr-line-dashed"></div>
+
+
+                        <div class="lightBoxGallery" id="lightBoxGallery">
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-lg-4">
+
+                <div class="ibox" id="media-detail-block">
+                    <div class="ibox-title"><h5>Media Detail</h5></div>
+                    <div class="ibox-content" id="media-detail">
+                        <div class="sk-spinner sk-spinner-wave">
+
+                            <div class="sk-rect1"></div>
+                            <div class="sk-rect2"></div>
+                            <div class="sk-rect3"></div>
+                            <div class="sk-rect4"></div>
+                            <div class="sk-rect5"></div>
+                        </div>
+                        <div id="media_detail_block" style="display:none;" class="form-horizontal">
+
+                            <div class="media_img_big">
+                                <img src="" />
+                            </div>
+
+                            <div style="clear:both"></div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Filename:</label>
+
+                                <div class="col-sm-9">
+                                    <div><label class="media_file_name"> adasdas  </label></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">File type:</label>
+
+                                <div class="col-sm-9">
+                                    <div><label class="media_file_type"> adasdas  </label></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Uploaded on:</label>
+
+                                <div class="col-sm-9">
+                                    <div><label class="media_file_on"> adasdas  </label></div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Dimensions:</label>
+
+                                <div class="col-sm-9">
+                                    <div><label class="media_file_dimensions"> adasdas  </label></div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">File Size:</label>
+
+                                <div class="col-sm-9">
+                                    <div><label class="media_file_size"> adasdas  </label></div>
+                                </div>
+                            </div>
+
+
+
+                            <!--<div class="hr-line-dashed"></div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Title</label>
+                                <div class="col-sm-10"><input type="text" class="form-control media_file_title"></div>
+                            </div>-->
+
+                            <div class="hr-line-dashed"></div>
+
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <h5 class="tag-title">Category</h5>
+                                    <ul class="tag-list" id="tax_media_list" style="padding: 0">
+                                        <%--
+                                        <li><a href="">Family</a></li>
+                                        <li><a href="">Work</a></li>
+                                        <li><a href="">Home</a></li>
+                                        <li><a href="">Children</a></li>
+                                        <li><a href="">Holidays</a></li>
+                                        <li><a href="">Music</a></li>
+                                        <li><a href="">Photography</a></li>
+                                        <li><a href="">Film</a></li>--%>
+                                    </ul>
+                                    <div class="clearfix"></div>
+                                </div>
+
+                            </div>
+
+
+                           
+
+                           
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+</transition>

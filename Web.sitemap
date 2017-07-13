@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  <siteMapNode url="Default" title="DashBoard"  description="">
+    <siteMapNode url="" title="Subscriber Manage"  description="">
+      <siteMapNode url="~/Application/SubScriber" title="Subscriber List"  description="" />
+      <siteMapNode url="~/Application/SubscriberGroup" title="Subscriber Groups"  description="" />
+      <siteMapNode url="~/Application/SubScriberVerify" title="Verify Email"  description="" />
+    </siteMapNode>
+    <siteMapNode url="" title="Email Templates"  description="">
+      <siteMapNode url="~/Application/Template" title="Templates List"  description="" />
+      <siteMapNode url="~/Application/Media" title="Media"  description="" />
+    </siteMapNode>
+    <siteMapNode url="" title="Campaign"  description="">
+      <siteMapNode url="~/Application/Campaign" title="Campaign Manage"  description="" />
+      <siteMapNode url="~/Application/R_CGroup" title="Campaign Group"  description="" />
+    </siteMapNode>
+    <siteMapNode url="~/Application/MailBox" title="MailBox"  description="" />
+    <siteMapNode url="~/Application/Setting" title="MailServer Setting"  description="" />
+  </siteMapNode>
+</siteMap>

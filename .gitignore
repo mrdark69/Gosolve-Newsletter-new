@@ -1,0 +1,25 @@
+
+
+
+
+#Custom Project 
+*.jpg
+*.config
+*.png
+*.gif
+*.csv
+*JPEG
+*.pdf
+
+
+Application/MediaLibrary/*
+Application/TemplateMock/*
+
+
+
+
+
+
+
+
+

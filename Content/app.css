@@ -1,0 +1,126 @@
+﻿.custom_progress_percentage
+{
+    font-size:26px;
+    font-weight:bold;
+}
+
+.sub-custom-filter {
+    width: 300px;
+    position: absolute;
+    left: 250px;
+    top: 60px;
+}
+
+/*Media*/
+.lightBoxGallery{
+    text-align:left;
+}
+    .lightBoxGallery .media-block {
+        position: relative;
+        display: inline-block;
+        margin: 7px;
+        width: 120px;
+        text-align: center;
+        background-color: #fff;
+        
+        border: 1px solid #e7eaec;
+    }
+    .lightBoxGallery .media-block .icon-check {
+        position: absolute;
+        /*font-size: 25px;
+        color: #f8ac59;*/
+        top:-15px;
+        right:-15px;
+    }
+
+.lightBoxGallery .media-block a {
+       
+}
+.lightBoxGallery .media-block a img {
+   
+    width: 100%;
+}
+
+    .lightBoxGallery .media-block a img {
+        margin: 0px;
+    }
+
+    .lightBoxGallery .media-block.media-block-selected  {
+     
+        border: 3px solid #1ab394;
+    }
+#media-list {
+    min-height: 600px;
+}
+#media-detail-block {
+    overflow: auto;
+    height: 600px;
+}
+.media_img_big {
+    position: relative;
+    margin-bottom: 30px
+}
+    .media_img_big img {
+        width: 100%;
+        padding: 3px;
+        border: 2px solid #e7eaec;
+    }
+
+#media_detail_block  .control-label {
+    padding-top: 0px !important;
+}
+
+.media-block .media-doc {
+    font-size: 90px;
+    color: #dadada;
+    line-height: 13px;
+    padding: 3px;
+}
+
+
+.tax-item-list {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    display: inline-block;
+    font-size: 15px;
+    margin-left: 5px
+}
+
+.tag-list li{
+    position:relative;
+}
+
+/*End media*/
+
+
+
+/*Teamplate*/
+
+.editor-content{
+    margin-top:20px;
+}
+    .editor-content .note-editor.note-frame {
+        border: 1px solid #e7eaec;
+    }
+
+
+.template-block {
+    position: relative;
+    display: inline-block;
+    margin: 7px;
+    width: 200px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #e7eaec;
+}
+.lightBoxGallery_template img{
+    margin:0px;
+}
+.template-block a img{
+  
+}
+#campaign-option-pan {
+    padding:60px 5px 5px 5px;
+    height: auto;
+}
